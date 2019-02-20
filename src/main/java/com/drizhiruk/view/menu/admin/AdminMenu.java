@@ -1,5 +1,6 @@
 package com.drizhiruk.view.menu.admin;
 
+import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.clientInput.ClientService;
 import com.drizhiruk.services.order_input.OrderService;
 import com.drizhiruk.services.product_input.ProductService;
@@ -21,7 +22,7 @@ public class AdminMenu {
         this.productService = productService;
     }
 
-    public void show() throws IOException {
+    public void show() throws IOException, BisnessException {
 
         boolean isRunning = true;
 
@@ -31,15 +32,15 @@ public class AdminMenu {
 
             switch (br.readLine()) {
                 case "1":
-                    ClientInfoAdmin clientInfoAdmin = new ClientInfoAdmin(clientService);
+                    ClientInfoAdmin clientInfoAdmin = new ClientInfoAdmin(br, clientService);
                     clientInfoAdmin.show();
                     break;
                 case "2":
-                    ProductInfoAdmin productInfoAdmin = new ProductInfoAdmin(productService);
+                    ProductInfoAdmin productInfoAdmin = new ProductInfoAdmin(br, productService, clientService);
                     productInfoAdmin.show();
                     break;
                 case "3":
-                    OrderInfoAdmin orderInfoAdmin = new OrderInfoAdmin(clientService, orderService, productService);
+                    OrderInfoAdmin orderInfoAdmin = new OrderInfoAdmin(br, clientService, orderService, productService);
                     orderInfoAdmin.show();
                     break;
                 case "0":

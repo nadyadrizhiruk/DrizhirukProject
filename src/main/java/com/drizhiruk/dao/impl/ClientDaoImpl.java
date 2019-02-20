@@ -4,33 +4,53 @@ import com.drizhiruk.dao.ClientDao;
 import com.drizhiruk.domain.Client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientDaoImpl implements ClientDao {
+    private Map<Long,Client> map = new HashMap<>();
+    private static  int generator =0;
+    private  static ClientDao clientDao;
 
-//    private final List<Client> clients = new ArrayList<>();
+    private ClientDaoImpl() {
+
+    }
 
     @Override
     public boolean saveClient(Client client) {
+        client.setId(generator++);
+        map.put(client.getId(),client);
         System.out.println("Saving client");
         return true;
     }
 
     @Override
     public Client findById(long id) {
-        return new Client("Check","","");
+        return map.get(id);
     }
 
     @Override
     public boolean removeClient(long id) {
-        System.out.println("client removing");
-        return true;
+        if (map.containsKey(id)){
+    map.remove(id);
+        return true;}else {return false;}
+
     }
 
     @Override
     public List<Client> getListOfAllClients() {
-        return new ArrayList<>();
+        return new ArrayList<>(map.values());
     }
 
-
+    public  static  ClientDao getInstance(){
+        if (clientDao == null) {
+            synchronized (ClientDaoImpl.class) {
+                if (clientDao == null) {
+                    clientDao = new ClientDaoImpl();
+                }
+            }
+        }
+        return clientDao;
+    }
 }

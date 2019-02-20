@@ -4,14 +4,17 @@ import com.drizhiruk.dao.OrderDao;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.validators.ValidationService;
 
 import java.util.List;
 
 public class OrderServiceImpl implements OrderService {
     private final OrderDao orderDao;
+    private final ValidationService validationService;
 
-    public OrderServiceImpl(OrderDao orderDao) {
+    public OrderServiceImpl(OrderDao orderDao, ValidationService validationService) {
         this.orderDao = orderDao;
+        this.validationService = validationService;
     }
 
     /**

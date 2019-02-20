@@ -1,22 +1,23 @@
 package com.drizhiruk.view.menu.admin;
 
 import com.drizhiruk.domain.Client;
+import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.clientInput.ClientService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 class ClientInfoAdmin {
 
-    private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader br;
     private final ClientService clientService;
 
-    ClientInfoAdmin(ClientService clientService) {
+    ClientInfoAdmin(BufferedReader br, ClientService clientService) {
+        this.br = br;
         this.clientService = clientService;
     }
 
-    public void show() throws IOException {
+    public void show() throws IOException, BisnessException {
 
         boolean isRunning = true;
 
@@ -65,17 +66,21 @@ class ClientInfoAdmin {
         System.out.println("0.Exit");
     }
 
-    private void createClient() throws IOException {
+    private void createClient() throws IOException, BisnessException {
         System.out.println("Input name: ");
         String name = br.readLine();
         System.out.println("Input surname: ");
         String surname = br.readLine();
-        System.out.println("Input phone: ");
+        System.out.println("Input age: ");
+        int age = readInteger();
+        System.out.println("Input phone (000 000 00 00): ");
         String phone = br.readLine();
-        clientService.createClient(name, surname, phone);
+        System.out.println("Input email: ");
+        String email = br.readLine();
+        clientService.createClient(name, surname, phone, age, email);
     }
 
-    private void modifyClient() throws IOException {
+    private void modifyClient() throws IOException, BisnessException {
 
         System.out.println("Input id: ");
         long id = Long.parseLong(br.readLine());
@@ -105,22 +110,27 @@ class ClientInfoAdmin {
 
             switch (br.readLine()) {
                 case "1":
+                    System.out.println("Input name");
                     name = br.readLine();
                     somethingWasChanged=true;
                     break;
                 case "2":
+                    System.out.println("Input surname");
                     surname = br.readLine();
                     somethingWasChanged=true;
                     break;
                 case "3":
-                    age = Integer.parseInt(br.readLine());
+                    System.out.println("Input age");
+                    age = readInteger();
                     somethingWasChanged=true;
                     break;
                 case "4":
+                    System.out.println("Input email");
                     email = br.readLine();
                     somethingWasChanged=true;
                     break;
                 case "5":
+                    System.out.println("Input phone");
                     phone = br.readLine();
                     somethingWasChanged=true;
                     break;
@@ -159,10 +169,11 @@ class ClientInfoAdmin {
 
     private void prinListOfAllClients() {
 
+        System.out.println("List of clients: ");
         for (Client element : clientService.getListOfAllClients()) {
-            System.out.println(element.getName());
+            System.out.println(element.getSurname()+" "+element.getName()+" id: "+element.getId());
         }
-
+        System.out.println();
     }
 
     private Client findClient() throws IOException {
@@ -174,6 +185,16 @@ class ClientInfoAdmin {
             System.out.println("Wrong id");
         }
         return client;
+    }
+
+    private int readInteger(){
+        try {
+            return Integer.parseInt(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readInteger();
+        }
     }
 
 }

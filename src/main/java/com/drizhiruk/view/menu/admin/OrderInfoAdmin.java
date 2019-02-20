@@ -9,19 +9,18 @@ import com.drizhiruk.services.product_input.ProductService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.util.List;
 
 class OrderInfoAdmin {
 
-    private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader br;
 
     private final ClientService clientService;
     private final OrderService orderService;
     private final ProductService productService;
 
-    public OrderInfoAdmin(ClientService clientService, OrderService orderService, ProductService productService){
+    public OrderInfoAdmin(BufferedReader br, ClientService clientService, OrderService orderService, ProductService productService){
+        this.br = br;
         this.clientService = clientService;
         this.orderService = orderService;
         this.productService = productService;

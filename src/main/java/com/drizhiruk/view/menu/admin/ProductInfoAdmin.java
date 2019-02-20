@@ -1,21 +1,25 @@
 package com.drizhiruk.view.menu.admin;
 
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.exceptions.BisnessException;
+import com.drizhiruk.services.clientInput.ClientService;
 import com.drizhiruk.services.product_input.ProductService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 
 class ProductInfoAdmin {
 
-    private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader br;
 
     private final ProductService productService;
+    private final ClientService clientService;
 
-    ProductInfoAdmin(ProductService productService) {
+    ProductInfoAdmin(BufferedReader br, ProductService productService, ClientService clientService) {
+        this.br = br;
         this.productService = productService;
+        this.clientService = clientService;
     }
 
     public void show() throws IOException {
@@ -155,7 +159,6 @@ class ProductInfoAdmin {
         }
 
     }
-
 
 
 }

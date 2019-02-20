@@ -2,15 +2,19 @@ package com.drizhiruk.services.clientInput;
 
 import com.drizhiruk.dao.ClientDao;
 import com.drizhiruk.domain.Client;
+import com.drizhiruk.exceptions.BisnessException;
+import com.drizhiruk.validators.ValidationService;
 
 import java.util.List;
 
 public class ClientServiceImpl implements ClientService {
 
     private final ClientDao clientDao;
+    private ValidationService validationService;
 
-    public ClientServiceImpl(ClientDao clDao) {
+    public ClientServiceImpl(ClientDao clDao, ValidationService validationService) {
         clientDao = clDao;
+        this.validationService = validationService;
     }
 
     /**
@@ -20,10 +24,23 @@ public class ClientServiceImpl implements ClientService {
      * @param phone phone of client
      */
     @Override
+    public void createClient(String name, String surname, String phone, int age, String email){
+
+        try {validationService.validateAge(age);
+            validationService.validateEmail(email);
+            validationService.validatePhone(phone);
+            validationService.checkExistence(clientDao.getListOfAllClients(),phone);
+            Client client = new Client(name, surname,age, email, phone);
+            saveClient(client);}
+        catch (BisnessException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
     public void createClient(String name, String surname, String phone) {
 
-        Client client = new Client(name, surname, phone);
-        saveClient(client);
+        createClient(name, surname, phone, 0, "" );
     }
 
     /**
@@ -49,13 +66,19 @@ public class ClientServiceImpl implements ClientService {
      */
 
     @Override
-    public void modifyClient(Client client, String name, String surname, int age, String email, String phone) {
-        client.setName(name);
-        client.setSurname(surname);
-        client.setAge(age);
-        client.setEmail(email);
-        client.setPhone(phone);
-        saveClient(client);
+    public void modifyClient(Client client, String name, String surname, int age, String email, String phone) throws BisnessException {
+        try {validationService.validateAge(age);
+            validationService.validateEmail(email);
+            validationService.validatePhone(phone);
+            client.setName(name);
+            client.setSurname(surname);
+            client.setAge(age);
+            client.setEmail(email);
+            client.setPhone(phone);
+            saveClient(client);}
+        catch (BisnessException ex){
+            ex.printStackTrace();
+        }
     }
 
     /**

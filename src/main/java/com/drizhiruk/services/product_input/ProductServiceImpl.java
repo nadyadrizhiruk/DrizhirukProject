@@ -2,15 +2,18 @@ package com.drizhiruk.services.product_input;
 
 import com.drizhiruk.dao.ProductDao;
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.validators.ValidationService;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
+    private final ValidationService validationService;
 
-    public ProductServiceImpl(ProductDao productDao) {
+    public ProductServiceImpl(ProductDao productDao, ValidationService validationService) {
         this.productDao = productDao;
+        this.validationService = validationService;
     }
 
     /**

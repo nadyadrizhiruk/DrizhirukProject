@@ -1,25 +1,26 @@
 package com.drizhiruk.view.menu;
 
+import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.view.menu.admin.AdminMenu;
 import com.drizhiruk.view.menu.client.ClientMenu;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class MainMenu {
 
-    private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader br;
 
     private final AdminMenu adminMenu;
     private final ClientMenu clientMenu;
 
-    public MainMenu(AdminMenu adminMenu, ClientMenu clientMenu) {
+    public MainMenu(BufferedReader br, AdminMenu adminMenu, ClientMenu clientMenu) {
+        this.br = br;
         this.adminMenu = adminMenu;
         this.clientMenu = clientMenu;
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, BisnessException {
 
         boolean isRunning = true;
 
