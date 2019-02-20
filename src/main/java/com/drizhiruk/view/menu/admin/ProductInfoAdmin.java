@@ -1,7 +1,6 @@
 package com.drizhiruk.view.menu.admin;
 
 import com.drizhiruk.domain.Product;
-import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.clientInput.ClientService;
 import com.drizhiruk.services.product_input.ProductService;
 
@@ -71,15 +70,15 @@ class ProductInfoAdmin {
         System.out.println("Input name: ");
         String name = br.readLine();
         System.out.println("Input prise: ");
-        BigDecimal price = new BigDecimal(br.readLine());
-        System.out.println("Input phone: ");
-        int amount = Integer.parseInt(br.readLine());
+        BigDecimal price = readBigDecimal();
+        System.out.println("Input amount: ");
+        int amount = readInteger();
         productService.createProduct(name, price, amount);
     }
 
     private void modifyProduct() throws IOException {
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
         Product product = productService.findById(id);
         if (product == null) {
             System.out.println("Wrong id");
@@ -102,15 +101,18 @@ class ProductInfoAdmin {
 
             switch (br.readLine()) {
                 case "1":
+                    System.out.println("Input name");
                     name = br.readLine();
                     somethingWasChanged=true;
                     break;
                 case "2":
-                    price = new BigDecimal(br.readLine());
+                    System.out.println("Input price");
+                    price = readBigDecimal();
                     somethingWasChanged=true;
                     break;
                 case "3":
-                    amount = Integer.parseInt(br.readLine());
+                    System.out.println("Input amount");
+                    amount = readInteger();
                     somethingWasChanged=true;
                     break;
                 case "9":
@@ -130,7 +132,7 @@ class ProductInfoAdmin {
     private void removeProduct() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
 
         if (productService.removeProduct(id)) {
             System.out.println("Successful attempt");
@@ -142,7 +144,7 @@ class ProductInfoAdmin {
     private void printProductInfo() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
         Product client = productService.findById(id);
         if (client == null) {
             System.out.println("Wrong id");
@@ -160,5 +162,34 @@ class ProductInfoAdmin {
 
     }
 
+    private BigDecimal readBigDecimal(){
+        try {
+            return new BigDecimal(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readBigDecimal();
+        }
+    }
+
+    private int readInteger(){
+        try {
+            return Integer.parseInt(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readInteger();
+        }
+    }
+
+    private long readLong(){
+        try {
+            return Long.parseLong(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readLong();
+        }
+    }
 
 }

@@ -83,7 +83,7 @@ class ClientInfoAdmin {
     private void modifyClient() throws IOException, BisnessException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
         Client client = clientService.findById(id);
         if (client == null) {
             System.out.println("Wrong id");
@@ -151,7 +151,7 @@ class ClientInfoAdmin {
     private void removeClient() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
 
         if (clientService.removeClient(id)) {
             System.out.println("Successful attempt");
@@ -179,7 +179,7 @@ class ClientInfoAdmin {
     private Client findClient() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
         Client client = clientService.findById(id);
         if (client == null) {
             System.out.println("Wrong id");
@@ -194,6 +194,16 @@ class ClientInfoAdmin {
         catch(IOException|NumberFormatException ex){
             System.out.println("Input number please");
             return  readInteger();
+        }
+    }
+
+    private long readLong(){
+        try {
+            return Long.parseLong(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readLong();
         }
     }
 

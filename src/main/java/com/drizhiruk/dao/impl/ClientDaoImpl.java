@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ClientDaoImpl implements ClientDao {
-    private Map<Long,Client> map = new HashMap<>();
-    private static  int generator =0;
-    private  static ClientDao clientDao;
+    private Map<Long, Client> map = new HashMap<>();
+    private static int generator = 0;
+    private static ClientDao clientDao;
 
     private ClientDaoImpl() {
 
@@ -20,7 +20,7 @@ public class ClientDaoImpl implements ClientDao {
     @Override
     public boolean saveClient(Client client) {
         client.setId(generator++);
-        map.put(client.getId(),client);
+        map.put(client.getId(), client);
         System.out.println("Saving client");
         return true;
     }
@@ -32,9 +32,12 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public boolean removeClient(long id) {
-        if (map.containsKey(id)){
-    map.remove(id);
-        return true;}else {return false;}
+        if (map.containsKey(id)) {
+            map.remove(id);
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -43,7 +46,7 @@ public class ClientDaoImpl implements ClientDao {
         return new ArrayList<>(map.values());
     }
 
-    public  static  ClientDao getInstance(){
+    public static ClientDao getInstance() {
         if (clientDao == null) {
             synchronized (ClientDaoImpl.class) {
                 if (clientDao == null) {

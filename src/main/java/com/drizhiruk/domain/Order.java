@@ -51,4 +51,8 @@ public class Order {
                 ", date='" + date +
                 '}';
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

@@ -84,7 +84,7 @@ public class ClientMenu {
         String surname = br.readLine();
         System.out.println("Input age: ");
         int age = readInteger();
-        System.out.println("Input phone: ");
+        System.out.println("Input phone (000 000 00 00): ");
         String phone = br.readLine();
         System.out.println("Input email: ");
         String email = br.readLine();

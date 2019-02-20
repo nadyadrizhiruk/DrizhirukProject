@@ -93,10 +93,12 @@ class OrderInfoAdmin {
 
             switch (br.readLine()) {
                 case "1":
+                    System.out.println("Input client: ");
                     client = findClient();
                     somethingWasChanged = true;
                     break;
                 case "2":
+                    System.out.println("Input date: ");
                     date = br.readLine();
                     somethingWasChanged = true;
                     break;
@@ -128,18 +130,18 @@ class OrderInfoAdmin {
         while (isRunning) {
 
             System.out.println("Modifying:");
-            System.out.println("1. remove element");
-            System.out.println("2. add element");
+            System.out.println("1. add element");
+            System.out.println("2. remove element");
             System.out.println("9. Return");
 
             switch (br.readLine()) {
                 case "1":
                     product = findProduct();
-                    products = orderService.deleteElementFromProductList(products, product);
+                    products = orderService.AddElementInProductList(products, product);
                     break;
                 case "2":
                     product = findProduct();
-                    products = orderService.AddElementInProductList(products, product);
+                    products = orderService.deleteElementFromProductList(products, product);
                     break;
                 case "9":
                     System.out.println("Quit");
@@ -158,7 +160,7 @@ class OrderInfoAdmin {
     private Client findClient() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
         Client client = clientService.findById(id);
         if (client == null) {
             System.out.println("Wrong id");
@@ -179,7 +181,7 @@ class OrderInfoAdmin {
     private Order findOrder() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
         Order order = orderService.findById(id);
         if (order == null) {
             System.out.println("Wrong id");
@@ -190,7 +192,7 @@ class OrderInfoAdmin {
     private void removeOrder() throws IOException {
 
         System.out.println("Input id: ");
-        long id = Long.parseLong(br.readLine());
+        long id = readLong();
 
         if (orderService.removeOrder(id)) {
             System.out.println("Successful attempt");
@@ -217,5 +219,15 @@ class OrderInfoAdmin {
             printOrder(order);
         }
 
+    }
+
+    private long readLong(){
+        try {
+            return Long.parseLong(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readLong();
+        }
     }
 }
