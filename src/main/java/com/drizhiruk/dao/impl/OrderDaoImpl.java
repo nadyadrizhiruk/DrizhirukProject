@@ -17,7 +17,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order findById(long id) {
-        return new Order(new Client("Check", "", ""), "", new ArrayList<Product>());
+        return map.get(id);
     }
 
     @Override

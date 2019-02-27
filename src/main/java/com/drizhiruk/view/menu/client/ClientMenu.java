@@ -50,7 +50,10 @@ public class ClientMenu {
                     createOrder();
                     break;
                 case "5":
-                    printOrder(findOrder());
+                    Order order = findOrder();
+                    if (order != null) {
+                        printOrder(order);
+                    }
                     break;
                 case "0":
                     System.exit(0);
@@ -123,27 +126,27 @@ public class ClientMenu {
                 case "1":
                     System.out.println("Input name");
                     name = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "2":
                     System.out.println("Input surname");
                     surname = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "3":
                     System.out.println("Input age");
                     age = readInteger();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "4":
                     System.out.println("Input email");
                     email = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "5":
                     System.out.println("Input phone");
                     phone = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "9":
                     System.out.println("Quit");
@@ -187,7 +190,7 @@ public class ClientMenu {
 
         while (isRunning) {
 
-            System.out.println("Modifying:");
+            System.out.println("Modifying products:");
             System.out.println("1. remove element");
             System.out.println("2. add element");
             System.out.println("9. Return");
@@ -217,7 +220,7 @@ public class ClientMenu {
 
     private Client findClient() throws IOException {
 
-        System.out.println("Input id: ");
+        System.out.println("Input client id: ");
         long id = Long.parseLong(br.readLine());
         Client client = clientService.findById(id);
         if (client == null) {
@@ -227,7 +230,7 @@ public class ClientMenu {
     }
 
     private Product findProduct() throws IOException {
-        System.out.println("Input id: ");
+        System.out.println("Input product id: ");
         long id = Long.parseLong(br.readLine());
         Product product = productService.findById(id);
         if (product == null) {
@@ -238,7 +241,7 @@ public class ClientMenu {
 
     private Order findOrder() throws IOException {
 
-        System.out.println("Input id: ");
+        System.out.println("Input order id: ");
         long id = Long.parseLong(br.readLine());
         Order order = orderService.findById(id);
         if (order == null) {
@@ -257,13 +260,12 @@ public class ClientMenu {
         }
     }
 
-    private int readInteger(){
+    private int readInteger() {
         try {
             return Integer.parseInt(br.readLine());
-        }
-        catch(IOException|NumberFormatException ex){
+        } catch (IOException | NumberFormatException ex) {
             System.out.println("Input number please");
-            return  readInteger();
+            return readInteger();
         }
     }
 }

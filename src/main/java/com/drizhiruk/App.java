@@ -27,7 +27,6 @@ public class App {
 
     public static void main(String[] args) throws IOException, BisnessException {
 
-//        ClientDao clientDao = new ClientDaoImpl();
         ClientDao clientDao = ClientDaoImpl.getInstance();
         ValidationService validationService = new ValidationServiceImpl(clientDao);
 
