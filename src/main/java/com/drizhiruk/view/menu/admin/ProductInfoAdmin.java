@@ -1,8 +1,8 @@
 package com.drizhiruk.view.menu.admin;
 
 import com.drizhiruk.domain.Product;
-import com.drizhiruk.services.clientInput.ClientService;
-import com.drizhiruk.services.product_input.ProductService;
+import com.drizhiruk.services.ClientService;
+import com.drizhiruk.services.ProductService;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -2,7 +2,7 @@ package com.drizhiruk.view.menu.admin;
 
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.exceptions.BisnessException;
-import com.drizhiruk.services.clientInput.ClientService;
+import com.drizhiruk.services.ClientService;
 
 import java.io.BufferedReader;
 import java.io.IOException;

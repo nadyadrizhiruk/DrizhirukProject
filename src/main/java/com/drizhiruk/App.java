@@ -7,12 +7,12 @@ import com.drizhiruk.dao.impl.ClientDaoImpl;
 import com.drizhiruk.dao.impl.OrderDaoImpl;
 import com.drizhiruk.dao.impl.ProductDaoImpl;
 import com.drizhiruk.exceptions.BisnessException;
-import com.drizhiruk.services.clientInput.ClientService;
-import com.drizhiruk.services.clientInput.ClientServiceImpl;
-import com.drizhiruk.services.order_input.OrderService;
-import com.drizhiruk.services.order_input.OrderServiceImpl;
-import com.drizhiruk.services.product_input.ProductService;
-import com.drizhiruk.services.product_input.ProductServiceImpl;
+import com.drizhiruk.services.ClientService;
+import com.drizhiruk.services.impl.ClientServiceImpl;
+import com.drizhiruk.services.OrderService;
+import com.drizhiruk.services.impl.OrderServiceImpl;
+import com.drizhiruk.services.ProductService;
+import com.drizhiruk.services.impl.ProductServiceImpl;
 import com.drizhiruk.validators.ValidationService;
 import com.drizhiruk.validators.impl.ValidationServiceImpl;
 import com.drizhiruk.view.menu.client.ClientMenu;
@@ -29,7 +29,7 @@ public class App {
 
 //        ClientDao clientDao = new ClientDaoImpl();
         ClientDao clientDao = ClientDaoImpl.getInstance();
-        ValidationService validationService = new ValidationServiceImpl();
+        ValidationService validationService = new ValidationServiceImpl(clientDao);
 
         ClientService clientService = new ClientServiceImpl(clientDao, validationService);
 

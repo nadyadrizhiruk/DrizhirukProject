@@ -4,9 +4,9 @@ import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
 import com.drizhiruk.exceptions.BisnessException;
-import com.drizhiruk.services.clientInput.ClientService;
-import com.drizhiruk.services.order_input.OrderService;
-import com.drizhiruk.services.product_input.ProductService;
+import com.drizhiruk.services.ClientService;
+import com.drizhiruk.services.OrderService;
+import com.drizhiruk.services.ProductService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
