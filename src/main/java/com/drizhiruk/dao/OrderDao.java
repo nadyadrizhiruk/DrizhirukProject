@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface OrderDao {
     Order findById(long id);
-    boolean saveOrder(Order order);
+    boolean saveExistingOrder(Order order);
+    boolean saveNewOrder(Order order);
     boolean removeOrder(long id);
     List<Order> findAllOrdersByClient(Client client);
 }

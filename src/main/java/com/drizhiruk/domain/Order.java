@@ -1,5 +1,6 @@
 package com.drizhiruk.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -7,12 +8,21 @@ public class Order {
     private long id;
     private Client client;
     private String date;
-    List<Product> products;
+    List<ProductInOrder> products = new ArrayList<>();
 
-    public Order(Client client, String date, List<Product> products) {
+    public Order(Client client, String date, List<ProductInOrder> products) {
         this.client = client;
         this.date = date;
         this.products = products;
+    }
+
+    public Order() {
+    }
+
+    public Order(long id, Client client, String date) {
+        this.id = id;
+        this.client = client;
+        this.date = date;
     }
 
     public long getId() {
@@ -27,7 +37,7 @@ public class Order {
         return date;
     }
 
-    public List<Product> getProducts() {
+    public List<ProductInOrder> getProducts() {
         return products;
     }
 
@@ -39,8 +49,16 @@ public class Order {
         this.date = date;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<ProductInOrder> products) {
         this.products = products;
+    }
+
+    public void addToProducts(ProductInOrder product) {
+        this.products.add(product);
+    }
+
+    public void removeFromProducts(ProductInOrder product) {
+        this.products.remove(product);
     }
 
     @Override

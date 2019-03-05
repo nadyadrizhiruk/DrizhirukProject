@@ -3,12 +3,14 @@ package com.drizhiruk.view.menu.admin;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.domain.ProductInOrder;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.OrderService;
 import com.drizhiruk.services.ProductService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 class OrderInfoAdmin {
@@ -19,7 +21,7 @@ class OrderInfoAdmin {
     private final OrderService orderService;
     private final ProductService productService;
 
-    public OrderInfoAdmin(BufferedReader br, ClientService clientService, OrderService orderService, ProductService productService){
+    public OrderInfoAdmin(BufferedReader br, ClientService clientService, OrderService orderService, ProductService productService) {
         this.br = br;
         this.clientService = clientService;
         this.orderService = orderService;
@@ -49,7 +51,8 @@ class OrderInfoAdmin {
                     break;
                 case "0":
                     System.exit(0);
-                    break;
+                case "9":
+                    return;
                 default:
                     System.out.println("Wrong input");
                     break;
@@ -81,7 +84,6 @@ class OrderInfoAdmin {
         boolean somethingWasChanged = false;
         Client client = order.getClient();
         String date = order.toString();
-        List<Product> products = order.getProducts();
 
         while (isRunning) {
 
@@ -103,25 +105,25 @@ class OrderInfoAdmin {
                     somethingWasChanged = true;
                     break;
                 case "3":
-                    products = modifyProductsList(products);
+                    modifyProductsList(order);
                     somethingWasChanged = true;
                     break;
                 case "9":
-                    System.out.println("Quit");
-                    isRunning = false;
-                    break;
+                    if (somethingWasChanged) {
+
+                        orderService.modifyOrder(order, client, date);
+                    }
+                    return;
                 default:
                     System.out.println("Wrong input");
                     break;
             }
 
         }
-        if (somethingWasChanged) {
-            orderService.modifyOrder(order, client, date, products);
-        }
+
     }
 
-    private List<Product> modifyProductsList(List<Product> products) throws IOException {
+    private void modifyProductsList(Order order) throws IOException {
 
         boolean isRunning = true;
 
@@ -129,19 +131,17 @@ class OrderInfoAdmin {
 
         while (isRunning) {
 
-            System.out.println("Modifying:");
-            System.out.println("1. add element");
-            System.out.println("2. remove element");
+            System.out.println("Modifying products:");
+            System.out.println("1. remove element");
+            System.out.println("2. add element");
             System.out.println("9. Return");
 
             switch (br.readLine()) {
                 case "1":
-                    product = findProduct();
-                    products = orderService.AddElementInProductList(products, product);
+                    removeProductInOrder(order);
                     break;
                 case "2":
-                    product = findProduct();
-                    products = orderService.deleteElementFromProductList(products, product);
+                    addProductInOrder(order);
                     break;
                 case "9":
                     System.out.println("Quit");
@@ -153,13 +153,35 @@ class OrderInfoAdmin {
             }
 
         }
-        return products;
 
+    }
+
+    private void removeProductInOrder(Order order) throws IOException {
+
+        System.out.println("Input product in order id: ");
+        long id = Long.parseLong(br.readLine());
+        if (!orderService.removeProductInOrderById(order, id)) {
+            System.out.println("Wrong id");
+        }
+    }
+
+    private void addProductInOrder(Order order) throws IOException {
+        Product product = findProduct();
+        if (product != null) {
+            System.out.println("Input prise: ");
+            BigDecimal price = readBigDecimal();
+            System.out.println("Input amount: ");
+            int amount = readInteger();
+
+            ProductInOrder productInOrder = orderService.createProductInOrderObject(product,price,amount,order);
+
+            orderService.AddElementInProductList(order, productInOrder);
+        }
     }
 
     private Client findClient() throws IOException {
 
-        System.out.println("Input id: ");
+        System.out.println("Input client id: ");
         long id = readLong();
         Client client = clientService.findById(id);
         if (client == null) {
@@ -169,7 +191,7 @@ class OrderInfoAdmin {
     }
 
     private Product findProduct() throws IOException {
-        System.out.println("Input id: ");
+        System.out.println("Input product id: ");
         long id = Long.parseLong(br.readLine());
         Product product = productService.findById(id);
         if (product == null) {
@@ -180,7 +202,7 @@ class OrderInfoAdmin {
 
     private Order findOrder() throws IOException {
 
-        System.out.println("Input id: ");
+        System.out.println("Input order id: ");
         long id = readLong();
         Order order = orderService.findById(id);
         if (order == null) {
@@ -191,7 +213,7 @@ class OrderInfoAdmin {
 
     private void removeOrder() throws IOException {
 
-        System.out.println("Input id: ");
+        System.out.println("Input order id: ");
         long id = readLong();
 
         if (orderService.removeOrder(id)) {
@@ -203,11 +225,13 @@ class OrderInfoAdmin {
 
     private void printOrder(Order order) throws IOException {
 
-        System.out.println("id: "+order.getId());
-        System.out.println("date: "+order.getDate());
-        System.out.println("client: "+order.getClient());
-        for(Product product:order.getProducts()){
-            System.out.println(product.getName());
+        if (order != null) {
+            System.out.println("id: " + order.getId());
+            System.out.println("date: " + order.getDate());
+            System.out.println("client: " + order.getClient());
+            for (ProductInOrder product : order.getProducts()) {
+                System.out.println(product.getProduct().getName());
+            }
         }
     }
 
@@ -215,19 +239,37 @@ class OrderInfoAdmin {
 
         Client client = findClient();
         List<Order> ordersList = orderService.findAllOrdersByClient(client);
-        for (Order order:ordersList){
+        for (Order order : ordersList) {
             printOrder(order);
         }
 
     }
 
-    private long readLong(){
+    private long readLong() {
         try {
             return Long.parseLong(br.readLine());
+        } catch (IOException | NumberFormatException ex) {
+            System.out.println("Input number please");
+            return readLong();
+        }
+    }
+
+    private BigDecimal readBigDecimal(){
+        try {
+            return new BigDecimal(br.readLine());
         }
         catch(IOException|NumberFormatException ex){
             System.out.println("Input number please");
-            return  readLong();
+            return  readBigDecimal();
+        }
+    }
+
+    private int readInteger() {
+        try {
+            return Integer.parseInt(br.readLine());
+        } catch (IOException | NumberFormatException ex) {
+            System.out.println("Input number please");
+            return readInteger();
         }
     }
 }

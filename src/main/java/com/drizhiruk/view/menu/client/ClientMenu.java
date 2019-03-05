@@ -3,6 +3,7 @@ package com.drizhiruk.view.menu.client;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.domain.ProductInOrder;
 import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.OrderService;
@@ -10,6 +11,7 @@ import com.drizhiruk.services.ProductService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,9 +151,7 @@ public class ClientMenu {
                     somethingWasChanged = true;
                     break;
                 case "9":
-                    System.out.println("Quit");
-                    isRunning = false;
-                    break;
+                    return;
                 default:
                     System.out.println("Wrong input");
                     break;
@@ -173,16 +173,17 @@ public class ClientMenu {
     private void createOrder() throws IOException {
 
         Client client = findClient();
+        System.out.println("Input an order date");
         String date = br.readLine();
 
-        Order order = orderService.createOrder(client, date, new ArrayList<>());
+        Order order = orderService.createOrderObject(client, date, new ArrayList<>());
 
-        List<Product> products = modifyProductsList(order.getProducts());
+        fillProductsList(order);
 
-        orderService.modifyOrder(order, client, date, products);
+        orderService.saveNewOrder(order);
     }
 
-    private List<Product> modifyProductsList(List<Product> products) throws IOException {
+    private void fillProductsList(Order order) throws IOException {
 
         boolean isRunning = true;
 
@@ -197,12 +198,10 @@ public class ClientMenu {
 
             switch (br.readLine()) {
                 case "1":
-                    product = findProduct();
-                    products = orderService.deleteElementFromProductList(products, product);
+                    removeProductInOrder(order);
                     break;
                 case "2":
-                    product = findProduct();
-                    products = orderService.AddElementInProductList(products, product);
+                    addProductInOrder(order);
                     break;
                 case "9":
                     System.out.println("Quit");
@@ -214,8 +213,6 @@ public class ClientMenu {
             }
 
         }
-        return products;
-
     }
 
     private Client findClient() throws IOException {
@@ -239,6 +236,29 @@ public class ClientMenu {
         return product;
     }
 
+    private void removeProductInOrder(Order order) throws IOException {
+
+        System.out.println("Input product in order id: ");
+        long id = Long.parseLong(br.readLine());
+        if (!orderService.removeProductInOrderById(order, id)) {
+            System.out.println("Wrong id");
+        }
+    }
+
+    private void addProductInOrder(Order order) throws IOException {
+        Product product = findProduct();
+        if (product != null) {
+            System.out.println("Input prise: ");
+            BigDecimal price = readBigDecimal();
+            System.out.println("Input amount: ");
+            int amount = readInteger();
+
+            ProductInOrder productInOrder = orderService.createProductInOrderObject(product,price,amount,order);
+
+            orderService.AddElementInProductList(order, productInOrder);
+        }
+    }
+
     private Order findOrder() throws IOException {
 
         System.out.println("Input order id: ");
@@ -255,8 +275,8 @@ public class ClientMenu {
         System.out.println("id: " + order.getId());
         System.out.println("date: " + order.getDate());
         System.out.println("client: " + order.getClient());
-        for (Product product : order.getProducts()) {
-            System.out.println(product.getName());
+        for (ProductInOrder product : order.getProducts()) {
+            System.out.println(product.getProduct().getName());
         }
     }
 
@@ -266,6 +286,16 @@ public class ClientMenu {
         } catch (IOException | NumberFormatException ex) {
             System.out.println("Input number please");
             return readInteger();
+        }
+    }
+
+    private BigDecimal readBigDecimal(){
+        try {
+            return new BigDecimal(br.readLine());
+        }
+        catch(IOException|NumberFormatException ex){
+            System.out.println("Input number please");
+            return  readBigDecimal();
         }
     }
 }

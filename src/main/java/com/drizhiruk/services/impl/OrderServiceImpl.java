@@ -4,12 +4,15 @@ import com.drizhiruk.dao.OrderDao;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.domain.ProductInOrder;
 import com.drizhiruk.services.OrderService;
 import com.drizhiruk.validators.ValidationService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderServiceImpl implements OrderService {
+
     private final OrderDao orderDao;
     private final ValidationService validationService;
 
@@ -24,25 +27,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void modifyOrder(Order order, Client client, String date, List<Product> products) {
+    public void modifyOrder(Order order, Client client, String date) {
 
         order.setClient(client);
         order.setDate(date);
-        order.setProducts(products);
-        saveOrder(order);
-    }
-
-    @Override
-    public void saveOrder(Order order) {
-
-        boolean result = orderDao.saveOrder(order);
+        boolean result = orderDao.saveExistingOrder(order);
         if (result) {
             System.out.println("Order " + order + "saved");
         }
     }
 
     @Override
-    public List<Product> deleteElementFromProductList(List<Product> products, Product product) {
+    public void saveNewOrder(Order order) {
+
+        boolean result = orderDao.saveNewOrder(order);
+        if (result) {
+            System.out.println("Order " + order + "saved");
+        }
+    }
+
+    @Override
+    public List<ProductInOrder> deleteElementFromProductList(List<ProductInOrder> products, ProductInOrder product) {
         if (products.remove(product)){
             System.out.println("element was removed");
         } else {
@@ -52,13 +57,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Product> AddElementInProductList(List<Product> products, Product product) {
-        if (products.add(product)){
-            System.out.println("element was add");
-        } else {
-            System.out.println("adding was unsuccessful");
-        }
-        return  products;
+    public boolean AddElementInProductList(Order order, ProductInOrder product) {
+        order.addToProducts(product);
+        return true;
     }
 
     @Override
@@ -72,9 +73,34 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createOrder(Client client, String data, List<Product> productList) {
+    public Order createOrder(Client client, String data, List<ProductInOrder> productList) {
         Order order = new Order(client,data,productList);
-        saveOrder(order);
+        saveNewOrder(order);
         return order;
+    }
+
+    @Override
+    public boolean removeProductInOrderById(Order order, long id) {
+        for (ProductInOrder productInOrder: order.getProducts()){
+            if (productInOrder.getId()==id){
+                order.removeFromProducts(productInOrder);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Order createOrderObject(Client client, String date, List<ProductInOrder> productsInOrder) {
+
+        return new Order(client,date,productsInOrder);
+
+    }
+
+    @Override
+    public ProductInOrder createProductInOrderObject(Product product, BigDecimal price, int amount, Order order) {
+
+        return new ProductInOrder(product,price,amount,order);
+
     }
 }

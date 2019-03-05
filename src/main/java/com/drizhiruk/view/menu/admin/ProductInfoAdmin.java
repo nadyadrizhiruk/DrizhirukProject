@@ -45,6 +45,8 @@ class ProductInfoAdmin {
                 case "5":
                     printListOfAllProducts();
                     break;
+                case "9":
+                    return;
                 case "0":
                     System.exit(0);
                     break;

@@ -3,9 +3,7 @@ package com.drizhiruk;
 import com.drizhiruk.dao.ClientDao;
 import com.drizhiruk.dao.OrderDao;
 import com.drizhiruk.dao.ProductDao;
-import com.drizhiruk.dao.impl.ClientDaoImpl;
-import com.drizhiruk.dao.impl.OrderDaoImpl;
-import com.drizhiruk.dao.impl.ProductDaoImpl;
+import com.drizhiruk.dao.impl.*;
 import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.impl.ClientServiceImpl;
@@ -27,16 +25,16 @@ public class App {
 
     public static void main(String[] args) throws IOException, BisnessException {
 
-        ClientDao clientDao = ClientDaoImpl.getInstance();
+        ClientDao clientDao = new ClientDBDaoImpl();
         ValidationService validationService = new ValidationServiceImpl(clientDao);
 
         ClientService clientService = new ClientServiceImpl(clientDao, validationService);
 
-        OrderDao orderDao = new OrderDaoImpl();
+        OrderDao orderDao = new OrderDBDaoImpl();
 
         OrderService orderService = new OrderServiceImpl(orderDao, validationService);
 
-        ProductDao productDao = new ProductDaoImpl();
+        ProductDao productDao = new ProductDBDaoImpl();
 
         ProductService productService = new ProductServiceImpl(productDao, validationService);
 

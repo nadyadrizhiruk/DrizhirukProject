@@ -3,7 +3,9 @@ package com.drizhiruk.services;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
+import com.drizhiruk.domain.ProductInOrder;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderService {
@@ -19,19 +21,16 @@ public interface OrderService {
     /**
      * modify fields of order object
      * @param order order object for modifying
-     * @param client new client of order
-     * @param date new date of order
-     * @param products new products list of order
      */
 
-    void modifyOrder(Order order, Client client, String date, List<Product> products);
+    void modifyOrder(Order order, Client client, String date);
 
     /**
      * method for saving order
      * @param order object of order for saving
      */
 
-    void saveOrder(Order order);
+    void saveNewOrder(Order order);
 
     /**
      * method delete element from product list
@@ -40,7 +39,7 @@ public interface OrderService {
      * @return list of products
      */
 
-    List<Product> deleteElementFromProductList(List<Product> products, Product product);
+    List<ProductInOrder> deleteElementFromProductList(List<ProductInOrder> products, ProductInOrder product);
 
     /**
      * method add element in product list
@@ -49,7 +48,7 @@ public interface OrderService {
      * @return list of products
      */
 
-    List<Product> AddElementInProductList(List<Product> products, Product product);
+    boolean AddElementInProductList(Order order, ProductInOrder product);
 
     /**
      * method remove order
@@ -75,5 +74,12 @@ public interface OrderService {
      * @return object of Order
      */
 
-    Order createOrder(Client client, String data, List<Product> productList);
+    Order createOrder(Client client, String data, List<ProductInOrder> productList);
+
+    boolean removeProductInOrderById(Order order, long id);
+
+    Order createOrderObject(Client client, String date, List<ProductInOrder> productsInOrder);
+
+    ProductInOrder createProductInOrderObject(Product product, BigDecimal price, int amount, Order order);
+
 }

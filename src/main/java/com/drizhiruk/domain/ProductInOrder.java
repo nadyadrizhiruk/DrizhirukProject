@@ -2,64 +2,83 @@ package com.drizhiruk.domain;
 
 import java.math.BigDecimal;
 
-public class Product {
-    private  long id;
-    private String name;
+public class ProductInOrder {
+    private long id;
+
+    private Product product;
     private BigDecimal price;
     private int amount;
+    private Order order;
 
-    public Product(String name, BigDecimal price, int amount) {
-        this.name = name;
+    public ProductInOrder(Product product, BigDecimal price, int amount, Order order) {
+        this.product = product;
         this.price = price;
         this.amount = amount;
+        this.order = order;
     }
 
-    public Product(long id, String name, BigDecimal price, int amount) {
+    public ProductInOrder(long id, Product product, BigDecimal price, int amount, Order order) {
         this.id = id;
-        this.name = name;
+        this.product = product;
         this.price = price;
         this.amount = amount;
+        this.order = order;
     }
 
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + product.getName() + '\'' +
                 ", price=" + price +
                 ", amount=" + amount +
                 '}';
     }
 
     public long getId() {
+
         return id;
     }
 
     public void setId(long id) {
+
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setPrice(BigDecimal price) {
+
         this.price = price;
     }
 
     public void setAmount(int amount) {
+
         this.amount = amount;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public BigDecimal getPrice() {
+
         return price;
     }
 
     public int getAmount() {
+
         return amount;
     }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
 }
