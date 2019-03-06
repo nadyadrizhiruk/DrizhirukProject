@@ -128,8 +128,8 @@ public class OrderDBDaoImpl implements OrderDao {
 
 
             preparedStatement = connection.prepareStatement("INSERT INTO orders(id_order, data, id_order_client) VALUES(?,?,?)");
-            preparedStatement.setLong(1, order.getId());//? 1
-            preparedStatement.setString(2, order.getDate());//? 1
+            preparedStatement.setLong(1, order.getId());
+            preparedStatement.setString(2, order.getDate());
             preparedStatement.setLong(3, order.getClient().getId());
             preparedStatement.execute();
 

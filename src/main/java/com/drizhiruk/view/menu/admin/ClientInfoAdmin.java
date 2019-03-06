@@ -106,7 +106,7 @@ class ClientInfoAdmin {
             System.out.println("3. Age. Previous: " + age);
             System.out.println("4. Email. Previous: " + email);
             System.out.println("5. Phone. Previous: " + phone);
-            System.out.println("9. Return");
+            System.out.println("9. Done");
 
             switch (br.readLine()) {
                 case "1":

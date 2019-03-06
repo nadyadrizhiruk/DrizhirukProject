@@ -63,7 +63,7 @@ class OrderInfoAdmin {
 
     private void ShowMenu() {
         System.out.println("1. Modify order");
-        System.out.println("2. Close order");
+        System.out.println("2. Remove order");
         System.out.println("3. Print order");
         System.out.println("4. List all orders by customer");
         System.out.println("9. Return");
@@ -83,7 +83,7 @@ class OrderInfoAdmin {
         boolean isRunning = true;
         boolean somethingWasChanged = false;
         Client client = order.getClient();
-        String date = order.toString();
+        String date = order.getDate();
 
         while (isRunning) {
 
@@ -91,7 +91,7 @@ class OrderInfoAdmin {
             System.out.println("1. client. Previous: " + client);
             System.out.println("2. date. Previous: " + date);
             System.out.println("3. products.");
-            System.out.println("9. Return");
+            System.out.println("9. Done");
 
             switch (br.readLine()) {
                 case "1":
@@ -134,7 +134,7 @@ class OrderInfoAdmin {
             System.out.println("Modifying products:");
             System.out.println("1. remove element");
             System.out.println("2. add element");
-            System.out.println("9. Return");
+            System.out.println("9. Done");
 
             switch (br.readLine()) {
                 case "1":
@@ -272,4 +272,13 @@ class OrderInfoAdmin {
             return readInteger();
         }
     }
+
+//    private LocalDateTime readDate() {
+//        try {
+//            return LocalDateTime.parse(br.readLine());
+//        } catch (IOException | NumberFormatException ex) {
+//            System.out.println("Input date in format yyyy-MM-dd-HH-mm-ss.zzz please");
+//            return readDate();
+//        }
+//    }
 }

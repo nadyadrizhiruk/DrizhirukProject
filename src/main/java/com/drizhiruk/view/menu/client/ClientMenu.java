@@ -122,7 +122,7 @@ public class ClientMenu {
             System.out.println("3. Age. Previous: " + age);
             System.out.println("4. Email. Previous: " + email);
             System.out.println("5. Phone. Previous: " + phone);
-            System.out.println("9. Return");
+            System.out.println("9. Done");
 
             switch (br.readLine()) {
                 case "1":
@@ -194,7 +194,7 @@ public class ClientMenu {
             System.out.println("Modifying products:");
             System.out.println("1. remove element");
             System.out.println("2. add element");
-            System.out.println("9. Return");
+            System.out.println("9. Done");
 
             switch (br.readLine()) {
                 case "1":

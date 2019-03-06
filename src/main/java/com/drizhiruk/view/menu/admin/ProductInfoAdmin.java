@@ -99,7 +99,7 @@ class ProductInfoAdmin {
             System.out.println("1. Name. Previous: " + name);
             System.out.println("2. price. Previous: " + price);
             System.out.println("3. amount. Previous: " + amount);
-            System.out.println("9. Return");
+            System.out.println("9. Done");
 
             switch (br.readLine()) {
                 case "1":
