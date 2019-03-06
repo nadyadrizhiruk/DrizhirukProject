@@ -30,15 +30,14 @@ public class App {
 
         ClientService clientService = new ClientServiceImpl(clientDao, validationService);
 
-        OrderDao orderDao = new OrderDBDaoImpl();
-
-        OrderService orderService = new OrderServiceImpl(orderDao, validationService);
-
         ProductDao productDao = new ProductDBDaoImpl();
-
         ProductService productService = new ProductServiceImpl(productDao, validationService);
 
+        OrderDao orderDao = new OrderDBDaoImpl();
+        OrderService orderService = new OrderServiceImpl(orderDao, validationService);
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         AdminMenu adminMenu = new AdminMenu(clientService, orderService, productService);
         ClientMenu clientMenu = new ClientMenu(br, clientService, orderService, productService);
         MainMenu mainMenu = new MainMenu(br, adminMenu, clientMenu);

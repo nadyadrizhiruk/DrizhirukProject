@@ -42,7 +42,10 @@ public class ProductServiceImpl implements ProductService {
         product.setName(name);
         product.setPrice(price);
         product.setAmount(amount);
-        saveProduct(product);
+        boolean result = productDao.saveExistingProduct(product);
+        if (result) {
+            System.out.println("Product " + product + " was saved");
+        }
     }
 
     @Override

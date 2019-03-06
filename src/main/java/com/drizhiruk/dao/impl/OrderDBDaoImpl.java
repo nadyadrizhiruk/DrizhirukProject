@@ -18,20 +18,19 @@ public class OrderDBDaoImpl implements OrderDao {
     public OrderDBDaoImpl() {
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS ORDERS(\n" +
-                    "ID_ORDER BIGINT PRIMARY KEY AUTO_INCREMENT,\n" +
-                    "DATA VARCHAR(50),\n" +
-                    "ID_ORDER_CLIENT BIGINT,\n" +
-                    "FOREIGN KEY (ID_ORDER_CLIENT) REFERENCES CLIENT (ID)\n" +
-                    ");");
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS PRODUCTS_IN_ORDERS(\n" +
-                    "ID_PRODUCTS_IN_ORDERS BIGINT PRIMARY KEY AUTO_INCREMENT,\n" +
-                    "ID_PRODUCTS_IN_ORDERS_PRODUCT BIGINT,\n" +
-                    "FOREIGN KEY (ID_PRODUCTS_IN_ORDERS_PRODUCT) REFERENCES PRODUCT (ID_PRODUCT),\n" +
-                    "ID_PRODUCTS_IN_ORDERS_ORDER BIGINT,\n" +
-                    "FOREIGN KEY (ID_PRODUCTS_IN_ORDERS_ORDER) REFERENCES ORDERS (ID_ORDER),\n" +
-                    "AMOUNT INT,\n" +
-                    "PRICE DECIMAL\n" +
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS orders(\n" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT,\n" +
+                    "date VARCHAR(50),\n" +
+                    "client_id BIGINT,\n" +
+                    "FOREIGN KEY (client_id) REFERENCES client (id));");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS products_in_orders(\n" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT,\n" +
+                    "product_id BIGINT,\n" +
+                    "FOREIGN KEY (product_id) REFERENCES product (id),\n" +
+                    "order_id BIGINT,\n" +
+                    "FOREIGN KEY (order_id) REFERENCES ORDERS (id),\n" +
+                    "amount INT,\n" +
+                    "price DECIMAL\n" +
                     ");");
 
         } catch (SQLException e) {
@@ -45,27 +44,27 @@ public class OrderDBDaoImpl implements OrderDao {
         try {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT \n" +
-                    "orders.data AS orders_date ,\n" +
+                    "orders.date AS orders_date ,\n" +
                     "client.id AS client_id,\n" +
                     "client.name  client_name,\n" +
                     "client.surname AS client_surname,\n" +
                     "client.age AS client_age,\n" +
                     "client.phone AS client_phone,\n" +
                     "client.email AS client_email,\n" +
-                    "product.id_product AS product_id,\n" +
+                    "product.id AS product_id,\n" +
                     "product.name  AS product_name,\n" +
                     "product.price AS product_price,\n" +
                     "product.amount AS product_amount,\n" +
                     "products_in_orders .amount AS products_amount,\n" +
                     "products_in_orders.price  AS  products_price,\n" +
-                    "products_in_orders.id_products_in_orders  AS  products_id,\n" +
-                    "orders.id_order  AS  order_id\n" +
+                    "products_in_orders.id  AS  products_id,\n" +
+                    "orders.id  AS  order_id\n" +
                     "FROM orders\n" +
-                    "LEFT JOIN client  ON orders.id_order_client = client .id\n" +
-                    "LEFT JOIN products_in_orders   ON ORDERS .id_order  = products_in_orders .id_products_in_orders_order\n" +
-                    "LEFT JOIN product  ON products_in_orders.id_products_in_orders_product   = product.id_product\n" +
-                    "WHERE orders.id_order = " + id + "\n" +
-                    "ORDER BY orders.id_order ;\n");
+                    "LEFT JOIN client  ON orders.client_id = client .id\n" +
+                    "LEFT JOIN products_in_orders   ON ORDERS .id  = products_in_orders .order_id\n" +
+                    "LEFT JOIN product  ON products_in_orders.product_id   = product.id\n" +
+                    "WHERE orders.id = " + id + "\n" +
+                    "ORDER BY orders.id ;\n");
             Order order = null;
             while (resultSet.next()) {
                 long orderId = resultSet.getLong("order_id");
@@ -121,37 +120,35 @@ public class OrderDBDaoImpl implements OrderDao {
     @Override
     public boolean saveExistingOrder(Order order) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products_in_orders  WHERE ID_PRODUCTS_IN_ORDERS_ORDER =" + order.getId() + ";");
-            preparedStatement.execute();
-            preparedStatement = connection.prepareStatement("DELETE FROM orders WHERE id_order =" + order.getId() + ";");
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products_in_orders  WHERE order_id =" + order.getId() + ";");
             preparedStatement.execute();
 
+            preparedStatement = connection.prepareStatement("UPDATE orders SET date=?, client_id=? WHERE id=?;");
+            preparedStatement.setString(1, order.getDate());
+            preparedStatement.setLong(2, order.getClient().getId());
+            preparedStatement.setLong(3, order.getId());
 
-            preparedStatement = connection.prepareStatement("INSERT INTO orders(id_order, data, id_order_client) VALUES(?,?,?)");
-            preparedStatement.setLong(1, order.getId());
-            preparedStatement.setString(2, order.getDate());
-            preparedStatement.setLong(3, order.getClient().getId());
             preparedStatement.execute();
 
             preparedStatement.clearBatch();
             preparedStatement = connection.prepareStatement("SELECT \n" +
-                    "data as date,\n" +
-                    "id_order_client as client_id,\n" +
-                    "MAX(id_order) as last_id\n" +
+                    "date as date,\n" +
+                    "client_id as client_id,\n" +
+                    "MAX(id) as last_id\n" +
                     "FROM orders\n" +
-                    "WHERE data = '" + order.getDate() + "' AND id_order_client=" + order.getClient().getId() + "\n" +
-                    "GROUP BY data,  id_order_client");
+                    "WHERE date = '" + order.getDate() + "' AND client_id=" + order.getClient().getId() + "\n" +
+                    "GROUP BY date,  client_id");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 long orderId = resultSet.getLong("last_id");
                 for (ProductInOrder productInOrder : order.getProducts()) {
-                    if (productInOrder.getId()!=0){
-                    preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(ID_PRODUCTS_IN_ORDERS_PRODUCT, ID_PRODUCTS_IN_ORDERS_ORDER) VALUES(?,?)");
+                    if (productInOrder.getId()==0){
+                    preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(product_id, order_id) VALUES(?,?)");
                     preparedStatement.setLong(1, productInOrder.getProduct().getId());//? 1
                     preparedStatement.setLong(2, orderId);
                     preparedStatement.execute();} else{
-                        preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(ID_PRODUCTS_IN_ORDERS, ID_PRODUCTS_IN_ORDERS_PRODUCT, ID_PRODUCTS_IN_ORDERS_ORDER) VALUES(?,?)");
+                        preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(id, product_id, order_id) VALUES(?,?,?)");
                         preparedStatement.setLong(1, productInOrder.getId());//? 1
                         preparedStatement.setLong(2, productInOrder.getProduct().getId());
                         preparedStatement.setLong(3, orderId);
@@ -173,24 +170,24 @@ public class OrderDBDaoImpl implements OrderDao {
     @Override
     public boolean saveNewOrder(Order order) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO orders(data, id_order_client) VALUES(?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO orders(date, client_id) VALUES(?,?)");
             preparedStatement.setString(1, order.getDate());//? 1
             preparedStatement.setLong(2, order.getClient().getId());
             preparedStatement.execute();
 
             preparedStatement = connection.prepareStatement("SELECT \n" +
-                    "data as date,\n" +
-                    "id_order_client as client_id,\n" +
-                    "MAX(id_order) as last_id\n" +
+                    "date as date,\n" +
+                    "client_id as client_id,\n" +
+                    "MAX(id) as last_id\n" +
                     "FROM orders\n" +
-                    "WHERE data = '" + order.getDate() + "' AND id_order_client=" + order.getClient().getId() + "\n" +
-                    "GROUP BY data,  id_order_client");
+                    "WHERE date = '" + order.getDate() + "' AND client_id=" + order.getClient().getId() + "\n" +
+                    "GROUP BY date,  client_id");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 long orderId = resultSet.getLong("last_id");
                 for (ProductInOrder productInOrder : order.getProducts()) {
-                    preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(ID_PRODUCTS_IN_ORDERS_PRODUCT, ID_PRODUCTS_IN_ORDERS_ORDER) VALUES(?,?)");
+                    preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(product_id, order_id) VALUES(?,?)");
                     preparedStatement.setLong(1, productInOrder.getProduct().getId());//? 1
                     preparedStatement.setLong(2, orderId);
                     preparedStatement.execute();
@@ -210,9 +207,9 @@ public class OrderDBDaoImpl implements OrderDao {
     public boolean removeOrder(long id) {
         try {
 
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products_in_orders  WHERE ID_PRODUCTS_IN_ORDERS_ORDER =" + id + ";");
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products_in_orders  WHERE order_id =" + id + ";");
             preparedStatement.execute();
-            preparedStatement = connection.prepareStatement("DELETE FROM orders WHERE id_order =" + id + ";");
+            preparedStatement = connection.prepareStatement("DELETE FROM orders WHERE id =" + id + ";");
             preparedStatement.execute();
             return true;
 
@@ -230,27 +227,27 @@ public class OrderDBDaoImpl implements OrderDao {
         try {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT \n" +
-                    "orders.data AS orders_date ,\n" +
+                    "orders.date AS orders_date ,\n" +
                     "client.id AS client_id,\n" +
                     "client.name  client_name,\n" +
                     "client.surname AS client_surname,\n" +
                     "client.age AS client_age,\n" +
                     "client.phone AS client_phone,\n" +
                     "client.email AS client_email,\n" +
-                    "product.id_product AS product_id,\n" +
+                    "product.id AS product_id,\n" +
                     "product.name  AS product_name,\n" +
                     "product.price AS product_price,\n" +
                     "product.amount AS product_amount,\n" +
                     "products_in_orders .amount AS products_amount,\n" +
                     "products_in_orders.price  AS  products_price,\n" +
-                    "products_in_orders.id_products_in_orders  AS  products_id,\n" +
-                    "orders.id_order  AS  order_id\n" +
+                    "products_in_orders.id  AS  products_id,\n" +
+                    "orders.id  AS  order_id\n" +
                     "FROM orders\n" +
-                    "LEFT JOIN client  ON orders.id_order_client = client .id\n" +
-                    "LEFT JOIN products_in_orders   ON ORDERS .id_order  = products_in_orders .id_products_in_orders_order\n" +
-                    "LEFT JOIN product  ON products_in_orders.id_products_in_orders_product   = product.id_product\n" +
-                    "WHERE orders.id_order_client = " + client.getId() + "\n" +
-                    "ORDER BY orders.id_order ;\n");
+                    "LEFT JOIN client  ON orders.client_id = client .id\n" +
+                    "LEFT JOIN products_in_orders   ON ORDERS .id  = products_in_orders .order_id\n" +
+                    "LEFT JOIN product  ON products_in_orders.product_id   = product.id\n" +
+                    "WHERE orders.client_id = " + client.getId() + "\n" +
+                    "ORDER BY orders.id ;\n");
             Order order = null;
 
             while (resultSet.next()) {

@@ -43,6 +43,26 @@ public class ClientDBDaoImpl implements ClientDao {
     }
 
     @Override
+    public boolean saveExistingClient(Client client) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE client SET name=?,surname=?,age=?,phone=?,email=? WHERE id=?;");
+            preparedStatement.setString(1, client.getName());
+            preparedStatement.setString(2, client.getSurname());
+            preparedStatement.setInt(3, client.getAge());
+            preparedStatement.setString(4, client.getPhone());
+            preparedStatement.setString(5, client.getEmail());
+            preparedStatement.setLong(6, client.getId());//? 1
+
+            return preparedStatement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
     public Client findById(long id) {
 
         Statement statement = null;

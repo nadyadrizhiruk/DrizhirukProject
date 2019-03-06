@@ -57,6 +57,10 @@ public class ClientServiceImpl implements ClientService {
             client.setAge(age);
             client.setEmail(email);
             client.setPhone(phone);
+            boolean result = clientDao.saveExistingClient(client);
+            if (result) {
+                System.out.println("Client " + client + "saved");
+            }
         } catch (BisnessException ex) {
             ex.printStackTrace();
         }

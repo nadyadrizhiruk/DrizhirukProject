@@ -18,7 +18,10 @@ public class ProductDBDaoImpl implements ProductDao {
     public ProductDBDaoImpl() {
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS PRODUCT(ID_PRODUCT BIGINT PRIMARY KEY AUTO_INCREMENT, NAME VARCHAR(50), PRICE DECIMAL , AMOUNT INT);");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS product(\n" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT, \n" +
+                    "name VARCHAR(50), \n" +
+                    "price DECIMAL , AMOUNT INT);");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,10 +32,28 @@ public class ProductDBDaoImpl implements ProductDao {
     @Override
     public boolean saveProduct(Product product) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO PRODUCT(NAME, PRICE, AMOUNT) VALUES(?,?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO product(name, price, amount) VALUES(?,?,?)");
             preparedStatement.setString(1, product.getName());//? 1
             preparedStatement.setBigDecimal(2, product.getPrice());
             preparedStatement.setInt(3, product.getAmount());
+
+            return preparedStatement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean saveExistingProduct(Product product) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE product SET name=?, price=?, amount=? WHERE id=?");
+            preparedStatement.setString(1, product.getName());//? 1
+            preparedStatement.setBigDecimal(2, product.getPrice());
+            preparedStatement.setInt(3, product.getAmount());
+            preparedStatement.setLong(4, product.getId());
 
             return preparedStatement.execute();
 
@@ -49,7 +70,7 @@ public class ProductDBDaoImpl implements ProductDao {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT WHERE ID_PRODUCT =" + id + ";");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE id =" + id + ";");
             if (resultSet.next()) {
                 String name = resultSet.getString(2);
                 BigDecimal price = resultSet.getBigDecimal(3);
@@ -75,7 +96,7 @@ public class ProductDBDaoImpl implements ProductDao {
     @Override
     public boolean removeProduct(long id) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM PRODUCT WHERE ID_PRODUCT =" + id + ";");
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM product WHERE id =" + id + ";");
             return preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -91,7 +112,7 @@ public class ProductDBDaoImpl implements ProductDao {
         List<Product> clients = new ArrayList<>();
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT;");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product;");
             while (resultSet.next()) {
                 long id = resultSet.getLong(1);
                 String name = resultSet.getString(2);

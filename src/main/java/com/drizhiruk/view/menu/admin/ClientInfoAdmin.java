@@ -135,17 +135,16 @@ class ClientInfoAdmin {
                     somethingWasChanged=true;
                     break;
                 case "9":
-                    System.out.println("Quit");
-                    isRunning = false;
-                    break;
+                    if (somethingWasChanged) {
+                        clientService.modifyClient(client, name, surname, age, email, phone);
+                    }
+                    return;
                 default:
                     System.out.println("Wrong input");
                     break;
             }
         }
-        if (somethingWasChanged) {
-            clientService.modifyClient(client, name, surname, age, email, phone);
-        }
+
     }
 
     private void removeClient() throws IOException {

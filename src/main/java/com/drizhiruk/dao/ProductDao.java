@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface ProductDao {
     boolean saveProduct(Product product);
+    boolean saveExistingProduct(Product product);
     Product findById(long id);
     boolean removeProduct(long id);
     List<Product> getListOfAllProducts();
