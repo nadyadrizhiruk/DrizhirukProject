@@ -109,7 +109,7 @@ public class ClientDBDaoImpl implements ClientDao {
     @Override
     public List<Client> getListOfAllClients() {
         Statement statement = null;
-        List<Client> clients = new ArrayList<>();
+        List<Client> clients = new ArrayList<Client>();
         try {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM CLIENT;");

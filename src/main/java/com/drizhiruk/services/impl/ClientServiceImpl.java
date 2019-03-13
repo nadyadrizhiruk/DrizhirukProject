@@ -27,7 +27,7 @@ public class ClientServiceImpl implements ClientService {
             validationService.validatePhone(phone);
             validationService.checkExistence(phone);
             Client client = new Client(name, surname, age, email, phone);
-            saveClient(client);
+            clientDao.saveClient(client);
         } catch (BisnessException ex) {
             ex.printStackTrace();
         }
@@ -47,7 +47,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void modifyClient(Client client, String name, String surname, int age, String email, String phone) throws BisnessException {
+    public void modifyClient(Client client, String name, String surname, int age, String email, String phone) {
         try {
             validationService.validateAge(age);
             validationService.validateEmail(email);
@@ -57,20 +57,9 @@ public class ClientServiceImpl implements ClientService {
             client.setAge(age);
             client.setEmail(email);
             client.setPhone(phone);
-            boolean result = clientDao.saveExistingClient(client);
-            if (result) {
-                System.out.println("Client " + client + "saved");
-            }
+            clientDao.saveExistingClient(client);
         } catch (BisnessException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void saveClient(Client client) {
-        boolean result = clientDao.saveClient(client);
-        if (result) {
-            System.out.println("Client " + client + "saved");
         }
     }
 

@@ -41,14 +41,6 @@ public interface ClientService {
      * @param client client object
      */
 
-    void saveClient(Client client);
-
-    /**
-     * method remove client
-     * @param id client id to find client for removing
-     * @return successful (true) or unsuccessful(false) result of removing
-     */
-
     boolean removeClient(long id);
 
     /**

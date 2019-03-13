@@ -8,7 +8,7 @@ public class Order {
     private long id;
     private Client client;
     private String date;
-    List<ProductInOrder> products = new ArrayList<>();
+    List<ProductInOrder> products = new ArrayList<ProductInOrder>();
 
     public Order(Client client, String date, List<ProductInOrder> products) {
         this.client = client;

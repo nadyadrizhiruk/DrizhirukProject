@@ -176,7 +176,7 @@ public class ClientMenu {
         System.out.println("Input an order date");
         String date = br.readLine();
 
-        Order order = orderService.createOrderObject(client, date, new ArrayList<>());
+        Order order = orderService.createOrderObject(client, date, new ArrayList<ProductInOrder>());
 
         fillProductsList(order);
 
