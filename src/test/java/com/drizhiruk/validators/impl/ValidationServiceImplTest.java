@@ -4,7 +4,6 @@ import com.drizhiruk.dao.ClientDao;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.validators.ValidationService;
-import com.sun.deploy.util.SessionState;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,7 @@ public class ValidationServiceImplTest {
     @Before
     public void setUp() {
 
-        validationService = new ValidationServiceImpl(clientDao);
+        validationService = new ValidationServiceImpl(clientDao, productDao, orderDao);
     }
 
     @Test

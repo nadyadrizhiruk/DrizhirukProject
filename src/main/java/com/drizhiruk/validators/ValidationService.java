@@ -10,4 +10,7 @@ public interface ValidationService {
     void validateEmail(String email) throws BisnessException;
     void validatePhone(String phone) throws BisnessException;
     void checkExistence(String phone) throws BisnessException;
+    void checkExistenceClientId(long id) throws BisnessException;
+    void checkExistenceOrderId(long id) throws BisnessException;
+    void checkExistenceProductId(long id) throws BisnessException;
 }

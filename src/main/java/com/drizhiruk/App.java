@@ -26,14 +26,15 @@ public class App {
     public static void main(String[] args) throws IOException, BisnessException {
 
         ClientDao clientDao = new ClientDBDaoImpl();
-        ValidationService validationService = new ValidationServiceImpl(clientDao);
+        ProductDao productDao = new ProductDBDaoImpl();
+        OrderDao orderDao = new OrderDBDaoImpl();
+
+        ValidationService validationService = new ValidationServiceImpl(clientDao, productDao, orderDao);
 
         ClientService clientService = new ClientServiceImpl(clientDao, validationService);
 
-        ProductDao productDao = new ProductDBDaoImpl();
         ProductService productService = new ProductServiceImpl(productDao, validationService);
 
-        OrderDao orderDao = new OrderDBDaoImpl();
         OrderService orderService = new OrderServiceImpl(orderDao, validationService);
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

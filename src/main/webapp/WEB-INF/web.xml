@@ -1,0 +1,10 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+<!--    <servlet>
+        <servlet-name>clientServlet</servlet-name>
+        <servlet-class>com.drizhiruk.servlets.ClientServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>clientServlet</servlet-name>
+        <url-pattern>/clients/*</url-pattern>
+    </servlet-mapping>-->
+</web-app>
