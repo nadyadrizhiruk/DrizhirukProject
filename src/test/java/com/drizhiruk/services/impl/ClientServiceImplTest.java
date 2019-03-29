@@ -164,7 +164,7 @@ public class ClientServiceImplTest {
         //Then
         Mockito.verify(clientDao, Mockito.times(1)).getListOfAllClients();
         Mockito.verifyNoMoreInteractions(clientDao);
-        Assert.assertEquals(expectedclients, expectedclients);
+        Assert.assertEquals(clients, expectedclients);
     }
 
 
