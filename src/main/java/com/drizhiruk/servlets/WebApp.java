@@ -33,33 +33,37 @@ public class WebApp implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ClientDao clientDao = new ClientDBDaoImpl();
-        ProductDao productDao = new ProductDBDaoImpl();
-        OrderDao orderDao = new OrderDBDaoImpl();
-        ValidationService validationService = new ValidationServiceImpl(clientDao, productDao, orderDao);
-        ClientService clientService = new ClientServiceImpl(clientDao, validationService);
-        ProductService productService = new ProductServiceImpl(productDao,validationService);
-        OrderService orderService = new OrderServiceImpl(orderDao,validationService);
-        ServletContext servletContext = sce.getServletContext();
-        servletContext
-                .addServlet("ClientServlet", new ClientServlet(clientService))
-                .addMapping("/clients/*");
-        servletContext
-                .addServlet("ProductServlet", new ProductServlet(productService))
-                .addMapping("/products/*");
-        servletContext
-                .addServlet("OrderServlet", new OrderServlet(orderService, clientService, productService))
-                .addMapping("/orders/*");
 
-        servletContext
-                .addFilter("ClientFilter", new ClientFilter(validationService))
-                .addMappingForServletNames(null,false,"ClientServlet");
-        servletContext
-                .addFilter("ProductFilter", new ProductFilter(validationService))
-                .addMappingForServletNames(null,false,"ProductServlet");
-        servletContext
-                .addFilter("OrderFilter", new OrderFilter(validationService))
-                .addMappingForServletNames(null,false,"OrderServlet");
+
+//        ClientDao clientDao = new ClientDBDaoImpl();
+//        ProductDao productDao = new ProductDBDaoImpl();
+//        OrderDao orderDao = new OrderDBDaoImpl();
+//        ValidationService validationService = new ValidationServiceImpl(clientDao, productDao, orderDao);
+//        ClientService clientService = new ClientServiceImpl(clientDao, validationService);
+//        ProductService productService = new ProductServiceImpl(productDao,validationService);
+//        OrderService orderService = new OrderServiceImpl(orderDao,validationService);
+//
+//
+//        ServletContext servletContext = sce.getServletContext();
+//        servletContext
+//                .addServlet("ClientServlet", new ClientServlet(clientService))
+//                .addMapping("/clients/*");
+//        servletContext
+//                .addServlet("ProductServlet", new ProductServlet(productService))
+//                .addMapping("/products/*");
+//        servletContext
+//                .addServlet("OrderServlet", new OrderServlet(orderService, clientService, productService))
+//                .addMapping("/orders/*");
+//
+//        servletContext
+//                .addFilter("ClientFilter", new ClientFilter(validationService))
+//                .addMappingForServletNames(null,false,"ClientServlet");
+//        servletContext
+//                .addFilter("ProductFilter", new ProductFilter(validationService))
+//                .addMappingForServletNames(null,false,"ProductServlet");
+//        servletContext
+//                .addFilter("OrderFilter", new OrderFilter(validationService))
+//                .addMappingForServletNames(null,false,"OrderServlet");
 
     }
 }

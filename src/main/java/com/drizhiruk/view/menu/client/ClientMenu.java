@@ -8,6 +8,7 @@ import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.OrderService;
 import com.drizhiruk.services.ProductService;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ClientMenu {
 
     private final BufferedReader br;

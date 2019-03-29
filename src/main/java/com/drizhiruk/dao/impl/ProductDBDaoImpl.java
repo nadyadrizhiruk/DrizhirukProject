@@ -3,6 +3,8 @@ package com.drizhiruk.dao.impl;
 import com.drizhiruk.dao.ProductDao;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -11,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//@Component
 public class ProductDBDaoImpl implements ProductDao {
 
     private Connection connection = DBConnectionHolder.connection;
 
+//    @Autowired
     public ProductDBDaoImpl() {
         try {
             Statement statement = connection.createStatement();

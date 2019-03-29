@@ -3,10 +3,13 @@ package com.drizhiruk.view.menu;
 import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.view.menu.admin.AdminMenu;
 import com.drizhiruk.view.menu.client.ClientMenu;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
+@Component
 public class MainMenu {
 
     private final BufferedReader br;
@@ -14,6 +17,7 @@ public class MainMenu {
     private final AdminMenu adminMenu;
     private final ClientMenu clientMenu;
 
+    @Autowired
     public MainMenu(BufferedReader br, AdminMenu adminMenu, ClientMenu clientMenu) {
         this.br = br;
         this.adminMenu = adminMenu;

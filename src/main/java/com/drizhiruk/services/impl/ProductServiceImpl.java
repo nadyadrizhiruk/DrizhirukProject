@@ -4,14 +4,18 @@ import com.drizhiruk.dao.ProductDao;
 import com.drizhiruk.domain.Product;
 import com.drizhiruk.services.ProductService;
 import com.drizhiruk.validators.ValidationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Component
 public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
     private final ValidationService validationService;
 
+    @Autowired
     public ProductServiceImpl(ProductDao productDao, ValidationService validationService) {
         this.productDao = productDao;
         this.validationService = validationService;

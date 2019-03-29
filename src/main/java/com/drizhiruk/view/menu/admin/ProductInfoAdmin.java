@@ -3,11 +3,14 @@ package com.drizhiruk.view.menu.admin;
 import com.drizhiruk.domain.Product;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+@Component
 class ProductInfoAdmin {
 
     private final BufferedReader br;
@@ -15,6 +18,7 @@ class ProductInfoAdmin {
     private final ProductService productService;
     private final ClientService clientService;
 
+    @Autowired
     ProductInfoAdmin(BufferedReader br, ProductService productService, ClientService clientService) {
         this.br = br;
         this.productService = productService;
@@ -159,7 +163,7 @@ class ProductInfoAdmin {
     private void printListOfAllProducts() {
 
         for (Product element : productService.getListOfAllProducts()) {
-            System.out.println(element.getName());
+            System.out.println("name:" +element.getName()+", id:"+element.getId());
         }
 
     }

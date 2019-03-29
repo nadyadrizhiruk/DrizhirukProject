@@ -2,16 +2,20 @@ package com.drizhiruk.dao.impl;
 
 import com.drizhiruk.dao.ClientDao;
 import com.drizhiruk.domain.Client;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+//@Component
 public class ClientDBDaoImpl implements ClientDao {
 
 
     private Connection connection = DBConnectionHolder.connection;
 
+   // @Autowired
     public ClientDBDaoImpl() {
         try {
             Statement statement = connection.createStatement();

@@ -1,14 +1,35 @@
 package com.drizhiruk.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "PRODUCTS_IN_ORDERS")
 public class ProductInOrder {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
 
+    @ManyToOne(targetEntity = Product.class)
+    @JoinColumn(name = "PRODUCT_ID ",referencedColumnName = "ID")
     private Product product;
+
+    @Column(name = "price")
     private BigDecimal price;
+    @Column(name = "amount")
     private int amount;
+
+    @ManyToOne(targetEntity = Order.class)
+    @JoinColumn(name = "ORDER_ID ",referencedColumnName = "ID")
     private Order order;
+
+    public ProductInOrder() {
+    }
 
     public ProductInOrder(Product product, BigDecimal price, int amount, Order order) {
         this.product = product;

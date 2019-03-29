@@ -4,11 +4,14 @@ import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.OrderService;
 import com.drizhiruk.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Component
 public class AdminMenu {
 
     private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,6 +19,7 @@ public class AdminMenu {
     private final OrderService orderService;
     private final ProductService productService;
 
+    @Autowired
     public AdminMenu(ClientService clientService, OrderService orderService, ProductService productService) {
         this.clientService = clientService;
         this.orderService = orderService;

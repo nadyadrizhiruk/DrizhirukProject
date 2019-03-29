@@ -7,12 +7,15 @@ import com.drizhiruk.domain.ProductInOrder;
 import com.drizhiruk.services.ClientService;
 import com.drizhiruk.services.OrderService;
 import com.drizhiruk.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Component
 class OrderInfoAdmin {
 
     private final BufferedReader br;
@@ -21,6 +24,7 @@ class OrderInfoAdmin {
     private final OrderService orderService;
     private final ProductService productService;
 
+    @Autowired
     public OrderInfoAdmin(BufferedReader br, ClientService clientService, OrderService orderService, ProductService productService) {
         this.br = br;
         this.clientService = clientService;

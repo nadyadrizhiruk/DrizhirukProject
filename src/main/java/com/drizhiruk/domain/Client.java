@@ -1,13 +1,27 @@
 package com.drizhiruk.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "CLIENT")
 public class Client {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private  long id;
+    @Column(name = "name")
     private  String name;
     private  String surname;
     private  int age;
     private  String email;
     private  String phone;
+
+    public Client() {
+    }
 
     public Client(String name, String surname, String phone) {
         this.name = name;

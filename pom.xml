@@ -11,6 +11,7 @@
 
     <properties>
         <tomcat.version>7.0.86</tomcat.version>
+        <jstl.version>1.2</jstl.version>
     </properties>
 
     <build>
@@ -122,6 +123,7 @@
                         <artifactId>tomcat-embed-logging-log4j</artifactId>
                         <version>${tomcat.version}</version>
                     </dependency>
+
                 </dependencies>
             </plugin>
         </plugins>
@@ -129,13 +131,14 @@
 
     <dependencies>
 
+        <!-- jstl -->
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl.version}</version>
+        </dependency>
 
-          <!--  <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-util</artifactId>
-                <version>7.0.91</version>
-            </dependency>
--->
+
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -143,13 +146,6 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.tomcat.maven</groupId>-->
-            <!--<artifactId>tomcat7-maven-plugin</artifactId>-->
-            <!--<version>2.2</version>-->
-            <!--&lt;!&ndash;<scope>provided</scope>&ndash;&gt;-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
@@ -167,6 +163,21 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.199</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.1.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.1.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.2.Final</version>
         </dependency>
     </dependencies>
 </project>

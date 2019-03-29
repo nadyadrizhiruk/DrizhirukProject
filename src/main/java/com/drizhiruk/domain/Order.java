@@ -1,13 +1,29 @@
 package com.drizhiruk.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "ORDERS")
 public class Order {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
+
+    @ManyToOne(targetEntity = Client.class)
+    @JoinColumn(name = "CLIENT_ID ",referencedColumnName = "ID")
     private Client client;
     private String date;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "order",
+            cascade = CascadeType.ALL)
     List<ProductInOrder> products = new ArrayList<ProductInOrder>();
 
     public Order(Client client, String date, List<ProductInOrder> products) {

@@ -1,6 +1,8 @@
 package com.drizhiruk.validators.impl;
 
 import com.drizhiruk.dao.ClientDao;
+import com.drizhiruk.dao.OrderDao;
+import com.drizhiruk.dao.ProductDao;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.validators.ValidationService;
@@ -22,6 +24,10 @@ public class ValidationServiceImplTest {
 
     @Mock
     private ClientDao clientDao;
+    @Mock
+    private ProductDao productDao;
+    @Mock
+    private OrderDao orderDao;
 
     @Before
     public void setUp() {

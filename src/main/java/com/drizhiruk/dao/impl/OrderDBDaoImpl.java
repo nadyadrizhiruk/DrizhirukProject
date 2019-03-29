@@ -5,16 +5,20 @@ import com.drizhiruk.domain.Client;
 import com.drizhiruk.domain.Order;
 import com.drizhiruk.domain.Product;
 import com.drizhiruk.domain.ProductInOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+//@Component
 public class OrderDBDaoImpl implements OrderDao {
 
     private Connection connection = DBConnectionHolder.connection;
 
+//    @Autowired
     public OrderDBDaoImpl() {
         try {
             Statement statement = connection.createStatement();

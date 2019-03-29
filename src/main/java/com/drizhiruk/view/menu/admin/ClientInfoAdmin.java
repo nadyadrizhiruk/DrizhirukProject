@@ -3,15 +3,19 @@ package com.drizhiruk.view.menu.admin;
 import com.drizhiruk.domain.Client;
 import com.drizhiruk.exceptions.BisnessException;
 import com.drizhiruk.services.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
+@Component
 class ClientInfoAdmin {
 
     private final BufferedReader br;
     private final ClientService clientService;
 
+    @Autowired
     ClientInfoAdmin(BufferedReader br, ClientService clientService) {
         this.br = br;
         this.clientService = clientService;
@@ -112,27 +116,27 @@ class ClientInfoAdmin {
                 case "1":
                     System.out.println("Input name");
                     name = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "2":
                     System.out.println("Input surname");
                     surname = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "3":
                     System.out.println("Input age");
                     age = readInteger();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "4":
                     System.out.println("Input email");
                     email = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "5":
                     System.out.println("Input phone");
                     phone = br.readLine();
-                    somethingWasChanged=true;
+                    somethingWasChanged = true;
                     break;
                 case "9":
                     if (somethingWasChanged) {
@@ -170,7 +174,7 @@ class ClientInfoAdmin {
 
         System.out.println("List of clients: ");
         for (Client element : clientService.getListOfAllClients()) {
-            System.out.println(element.getSurname()+" "+element.getName()+" id: "+element.getId());
+            System.out.println(element.getSurname() + " " + element.getName() + " id: " + element.getId());
         }
         System.out.println();
     }
@@ -186,23 +190,21 @@ class ClientInfoAdmin {
         return client;
     }
 
-    private int readInteger(){
+    private int readInteger() {
         try {
             return Integer.parseInt(br.readLine());
-        }
-        catch(IOException|NumberFormatException ex){
+        } catch (IOException | NumberFormatException ex) {
             System.out.println("Input number please");
-            return  readInteger();
+            return readInteger();
         }
     }
 
-    private long readLong(){
+    private long readLong() {
         try {
             return Long.parseLong(br.readLine());
-        }
-        catch(IOException|NumberFormatException ex){
+        } catch (IOException | NumberFormatException ex) {
             System.out.println("Input number please");
-            return  readLong();
+            return readLong();
         }
     }
 
