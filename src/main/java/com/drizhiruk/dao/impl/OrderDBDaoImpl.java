@@ -16,12 +16,13 @@ import java.util.List;
 //@Component
 public class OrderDBDaoImpl implements OrderDao {
 
-    private Connection connection = DBConnectionHolder.connection;
+    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/worckspace/nadya";
+    private static final String LOGIN = "DrizhirukProject";
+    private static final String PASSWORD = "DrizhirukProject";
 
-//    @Autowired
     public OrderDBDaoImpl() {
-        try {
-            Statement statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS orders(\n" +
                     "id BIGINT PRIMARY KEY AUTO_INCREMENT,\n" +
                     "date VARCHAR(50),\n" +
@@ -44,9 +45,9 @@ public class OrderDBDaoImpl implements OrderDao {
 
     @Override
     public Order findById(long id) {
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
+
             ResultSet resultSet = statement.executeQuery("SELECT \n" +
                     "orders.date AS orders_date ,\n" +
                     "client.id AS client_id,\n" +
@@ -99,7 +100,7 @@ public class OrderDBDaoImpl implements OrderDao {
                     int productsAmount = resultSet.getInt("products_amount");
 
                     Product product = new Product(productId, productName, productPrice, productAmount);
-                    ProductInOrder productInOrder = new ProductInOrder(productsId,product,productsPrice,productsAmount,order);
+                    ProductInOrder productInOrder = new ProductInOrder(productsId, product, productsPrice, productsAmount, order);
                     order.addToProducts(productInOrder);
                 }
             }
@@ -108,22 +109,16 @@ public class OrderDBDaoImpl implements OrderDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
         return null;
     }
 
     @Override
     public boolean saveExistingOrder(Order order) {
-        try {
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD)) {
+
+            connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products_in_orders  WHERE order_id =" + order.getId() + ";");
             preparedStatement.execute();
 
@@ -147,11 +142,12 @@ public class OrderDBDaoImpl implements OrderDao {
             if (resultSet.next()) {
                 long orderId = resultSet.getLong("last_id");
                 for (ProductInOrder productInOrder : order.getProducts()) {
-                    if (productInOrder.getId()==0){
-                    preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(product_id, order_id) VALUES(?,?)");
-                    preparedStatement.setLong(1, productInOrder.getProduct().getId());//? 1
-                    preparedStatement.setLong(2, orderId);
-                    preparedStatement.execute();} else{
+                    if (productInOrder.getId() == 0) {
+                        preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(product_id, order_id) VALUES(?,?)");
+                        preparedStatement.setLong(1, productInOrder.getProduct().getId());//? 1
+                        preparedStatement.setLong(2, orderId);
+                        preparedStatement.execute();
+                    } else {
                         preparedStatement = connection.prepareStatement("INSERT INTO products_in_orders(id, product_id, order_id) VALUES(?,?,?)");
                         preparedStatement.setLong(1, productInOrder.getId());//? 1
                         preparedStatement.setLong(2, productInOrder.getProduct().getId());
@@ -160,6 +156,7 @@ public class OrderDBDaoImpl implements OrderDao {
                     }
 
                 }
+                connection.commit();
                 return true;
             }
             return false;
@@ -173,7 +170,8 @@ public class OrderDBDaoImpl implements OrderDao {
 
     @Override
     public boolean saveNewOrder(Order order) {
-        try {
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD)) {
+            connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO orders(date, client_id) VALUES(?,?)");
             preparedStatement.setString(1, order.getDate());//? 1
             preparedStatement.setLong(2, order.getClient().getId());
@@ -196,6 +194,7 @@ public class OrderDBDaoImpl implements OrderDao {
                     preparedStatement.setLong(2, orderId);
                     preparedStatement.execute();
                 }
+                connection.commit();
                 return true;
             }
             return false;
@@ -209,12 +208,14 @@ public class OrderDBDaoImpl implements OrderDao {
 
     @Override
     public boolean removeOrder(long id) {
-        try {
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD)) {
 
+            connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products_in_orders  WHERE order_id =" + id + ";");
             preparedStatement.execute();
             preparedStatement = connection.prepareStatement("DELETE FROM orders WHERE id =" + id + ";");
             preparedStatement.execute();
+            connection.commit();
             return true;
 
         } catch (SQLException e) {
@@ -226,10 +227,11 @@ public class OrderDBDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findAllOrdersByClient(Client client) {
+
         List<Order> orders = new ArrayList<>();
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT \n" +
                     "orders.date AS orders_date ,\n" +
                     "client.id AS client_id,\n" +
@@ -276,23 +278,14 @@ public class OrderDBDaoImpl implements OrderDao {
                     int productsAmount = resultSet.getInt("products_amount");
 
                     Product product = new Product(productId, productName, productPrice, productAmount);
-                    ProductInOrder productInOrder = new ProductInOrder(productsId,product,productsPrice,productsAmount,order);
+                    ProductInOrder productInOrder = new ProductInOrder(productsId, product, productsPrice, productsAmount, order);
                     order.addToProducts(productInOrder);
                 }
             }
             return orders;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
         return orders;
     }
 }

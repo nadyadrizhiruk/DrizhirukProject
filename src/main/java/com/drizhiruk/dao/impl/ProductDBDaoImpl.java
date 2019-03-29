@@ -16,12 +16,13 @@ import java.util.Map;
 //@Component
 public class ProductDBDaoImpl implements ProductDao {
 
-    private Connection connection = DBConnectionHolder.connection;
+    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/worckspace/nadya";
+    private static final String LOGIN = "DrizhirukProject";
+    private static final String PASSWORD = "DrizhirukProject";
 
-//    @Autowired
     public ProductDBDaoImpl() {
-        try {
-            Statement statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS product(\n" +
                     "id BIGINT PRIMARY KEY AUTO_INCREMENT, \n" +
                     "name VARCHAR(50), \n" +
@@ -35,8 +36,9 @@ public class ProductDBDaoImpl implements ProductDao {
 
     @Override
     public boolean saveProduct(Product product) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO product(name, price, amount) VALUES(?,?,?)");
+        String request = "INSERT INTO product(name, price, amount) VALUES(?,?,?)";
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(request)) {
             preparedStatement.setString(1, product.getName());//? 1
             preparedStatement.setBigDecimal(2, product.getPrice());
             preparedStatement.setInt(3, product.getAmount());
@@ -52,8 +54,9 @@ public class ProductDBDaoImpl implements ProductDao {
 
     @Override
     public boolean saveExistingProduct(Product product) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE product SET name=?, price=?, amount=? WHERE id=?");
+        String request = "UPDATE product SET name=?, price=?, amount=? WHERE id=?";
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(request)) {
             preparedStatement.setString(1, product.getName());//? 1
             preparedStatement.setBigDecimal(2, product.getPrice());
             preparedStatement.setInt(3, product.getAmount());
@@ -71,9 +74,8 @@ public class ProductDBDaoImpl implements ProductDao {
     @Override
     public Product findById(long id) {
 
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE id =" + id + ";");
             if (resultSet.next()) {
                 String name = resultSet.getString(2);
@@ -84,23 +86,15 @@ public class ProductDBDaoImpl implements ProductDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
         return null;
     }
 
     @Override
     public boolean removeProduct(long id) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM product WHERE id =" + id + ";");
+        String request = "DELETE FROM product WHERE id =" + id + ";";
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(request)) {
             return preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -112,10 +106,9 @@ public class ProductDBDaoImpl implements ProductDao {
 
     @Override
     public List<Product> getListOfAllProducts() {
-        Statement statement = null;
         List<Product> clients = new ArrayList<>();
-        try {
-            statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM product;");
             while (resultSet.next()) {
                 long id = resultSet.getLong(1);
@@ -128,16 +121,7 @@ public class ProductDBDaoImpl implements ProductDao {
             return clients;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
         return null;
     }
 }

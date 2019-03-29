@@ -13,12 +13,13 @@ import java.util.List;
 public class ClientDBDaoImpl implements ClientDao {
 
 
-    private Connection connection = DBConnectionHolder.connection;
+    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/worckspace/nadya";
+    private static final String LOGIN = "DrizhirukProject";
+    private static final String PASSWORD = "DrizhirukProject";
 
-   // @Autowired
     public ClientDBDaoImpl() {
-        try {
-            Statement statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS CLIENT(ID BIGINT PRIMARY KEY AUTO_INCREMENT, NAME VARCHAR(20), SURNAME VARCHAR(20), AGE INT, PHONE VARCHAR(20),  EMAIL VARCHAR(50));");
 
         } catch (SQLException e) {
@@ -29,8 +30,9 @@ public class ClientDBDaoImpl implements ClientDao {
 
     @Override
     public boolean saveClient(Client client) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO CLIENT(NAME,SURNAME,AGE,PHONE,EMAIL) VALUES(?,?,?,?,?)");
+        String request = "INSERT INTO CLIENT(NAME,SURNAME,AGE,PHONE,EMAIL) VALUES(?,?,?,?,?)";
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(request)) {
             preparedStatement.setString(1, client.getName());//? 1
             preparedStatement.setString(2, client.getSurname());
             preparedStatement.setInt(3, client.getAge());
@@ -48,8 +50,10 @@ public class ClientDBDaoImpl implements ClientDao {
 
     @Override
     public boolean saveExistingClient(Client client) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE client SET name=?,surname=?,age=?,phone=?,email=? WHERE id=?;");
+        String request = "UPDATE client SET name=?,surname=?,age=?,phone=?,email=? WHERE id=?;";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(request)) {
             preparedStatement.setString(1, client.getName());
             preparedStatement.setString(2, client.getSurname());
             preparedStatement.setInt(3, client.getAge());
@@ -69,10 +73,10 @@ public class ClientDBDaoImpl implements ClientDao {
     @Override
     public Client findById(long id) {
 
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM CLIENT WHERE ID =" + id + ";");
+        String request = "SELECT * FROM CLIENT WHERE ID =" + id + ";";
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(request);
             if (resultSet.next()) {
                 String name = resultSet.getString(2);
                 String surname = resultSet.getString(3);
@@ -84,14 +88,6 @@ public class ClientDBDaoImpl implements ClientDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return null;
@@ -99,8 +95,10 @@ public class ClientDBDaoImpl implements ClientDao {
 
     @Override
     public boolean removeClient(long id) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM CLIENT WHERE ID =" + id + ";");
+        String request = "DELETE FROM CLIENT WHERE ID =" + id + ";";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(request)) {
             return preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -112,10 +110,10 @@ public class ClientDBDaoImpl implements ClientDao {
 
     @Override
     public List<Client> getListOfAllClients() {
-        Statement statement = null;
+
         List<Client> clients = new ArrayList<Client>();
-        try {
-            statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(DB_URL, LOGIN, PASSWORD);
+             Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM CLIENT;");
             while (resultSet.next()) {
                 long id = resultSet.getLong(1);
@@ -130,16 +128,7 @@ public class ClientDBDaoImpl implements ClientDao {
             return clients;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
         return null;
     }
 }
